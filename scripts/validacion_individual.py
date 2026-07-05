@@ -1,16 +1,20 @@
-# id_pedido
+# -------------------------------------------------------------
+# CADA UNO HACE 4, VALIDACION DE AMBOS TIPOS Y ADEMÁS LIMPIEZA
+# -------------------------------------------------------------
+
+# id_pedido (S)
 
 
 
-# Fecha
+# Fecha (S)
 
 
 
-# Rut cliente
+# Rut cliente (S)
 
 
 
-# Nombre cliente
+# Nombre cliente (S)
 
 
 
