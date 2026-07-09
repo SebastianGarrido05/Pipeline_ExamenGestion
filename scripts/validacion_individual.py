@@ -1,14 +1,27 @@
 import pandas as pd
 import logging 
 import scripts.ingesta as ig
+
 # -------------------------------------------------------------
 # CADA UNO HACE 4, VALIDACION DE AMBOS TIPOS Y ADEMÁS LIMPIEZA
 # -------------------------------------------------------------
 
+# Funcion completa
+
+
+
+
 # id_pedido (S)
+def validar_id_pedido(df):
 
+    # Se ordena el df por 'id_pedido'
+    logging.info("Ordenando por id_pedido...")
+    df = ig.df.sort_values(by='id_pedido')
 
-    # id_pedido
+    # Se busca duplicados en la columna 'id_pedido'
+    logging.info("Normalizando texto...")
+    df = ig.df.map(lambda x: x.lower().strip() if isinstance(x, str) else x)
+
 
 
 # Fecha (S)

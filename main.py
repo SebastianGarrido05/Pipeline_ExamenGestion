@@ -1,5 +1,13 @@
 import scripts.ingesta as ing
+import scripts.validacion_individual as vi
 from pathlib import Path
+import logging
+
+# login
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 # RUTAS TEST
 BASE_DIR = Path(__file__).resolve().parent
