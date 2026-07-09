@@ -209,7 +209,7 @@ def Validar_cantidad(df):
 
         logging.error(f"Error al validar cantidad: {e}")
 
-
+# Ultimas 4 columnas
 # Precio unitario
 def Validar_precio_unitario(df):
     precios = {
@@ -264,6 +264,7 @@ def Validar_precio_unitario(df):
             df["precio_unitario"].isna() |
             (df["precio_unitario"] <= 0)
         ]
+
         return df
     except Exception as e:
         logging.error(f"Error al validar precio unitario: {e}")
@@ -354,6 +355,34 @@ def Validar_fecha_despacho(df):
 
         return df
     except Exception as e:
-        print(f"Error al validar fecha de despacho: {e}")
+        logging.error(f"Error al validar fecha de despacho: {e}")
         return None
 
+# Funcion total venta (nueva columna)
+def Crear_total_venta(df):
+    try:
+        # Se calcula el total de venta
+        df["total_venta"] = (
+            df["cantidad"] *
+            df["precio_unitario"] *
+            (1 - df["descuento_pct"] / 100)
+        ).round(2)
+        return df
+    except Exception as e:
+        logging.error(f"Error al calcular total de venta: {e}")
+        return None
+    
+# Crear segmento de precio (nueva columna)
+def Crear_segmento_precio(df):
+    try:
+        # Se crea la columna de segmento de precio
+        df["segmento_precio"] = pd.cut(
+            df["precio_unitario"],
+            bins=[0, 10000, 50000, float("inf")],
+            labels=["Bajo", "Medio", "Alto"],
+            right=False
+        )
+        return df
+    except Exception as e:
+        logging.error(f"Error al crear segmento de precio: {e}")
+        return None
