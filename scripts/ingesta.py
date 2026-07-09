@@ -19,6 +19,10 @@ def procesar_csv(file_path, output_path):
     vi.Validar_producto(df)
     vi.Validar_categoria(df)
     vi.Validar_cantidad(df)
+    vi.Validar_precio_unitario(df)
+    vi.Validar_descuento(df)
+    vi.Validar_estado_pedido(df)
+    vi.Validar_fecha_despacho(df)
 
     logging.info("Normalizando texto...")
     df = df.map(lambda x: x.lower().strip() if isinstance(x, str) else x)

@@ -6,6 +6,28 @@ import logging
 # -------------------------------------------------------------
 df=None
 
+def convertir_fecha(fecha):
+    FORMATOS = [
+    "%Y-%m-%d",
+    "%d/%m/%Y",
+    "%d-%m-%Y"]
+
+    if pd.isna(fecha):
+        return pd.NA
+    
+    fecha = str(fecha).strip()
+
+    if fecha == "":
+        return pd.NA
+
+    for formato in FORMATOS:
+        try:
+            return pd.to_datetime(fecha, format=formato).strftime("%Y-%m-%d")
+        except ValueError:
+            continue
+
+    return pd.NA
+
 
 # id_pedido (S)
 
@@ -189,17 +211,149 @@ def Validar_cantidad(df):
 
 
 # Precio unitario
+def Validar_precio_unitario(df):
+    precios = {
+        "Apiradora Robot Xiaomi": 39990,
+        "Auriculares Sony WH-1000": 49990,
+        "Bolso Cuero Sintetico": 19990,
+        "Cafetera De Longhi": 79990,
+        "Chaqueta Parka Columbia": 29990,
+        "Disco SSD 500GB": 59990,
+        "Freidora de Aire Ultracomb": 69990,
+        "Gorra New Era": 4990,
+        "Hervidor Electrico Oster": 29990,
+        "Jeans Skinny Levi's": 9990,
+        "Lampara LED de Escritorio": 14990,
+        "Licuadora Oster 600W": 39990,
+        "Microondas Mabe 20L": 79990,
+        "Monitor Samsung 24": 149990,
+        "Mouse Inalambrico Logitech": 14990,
+        "Notebook Lenovo IdeaPad": 199990,
+        "Parka Impermeable North Face": 39990,
+        "Pendrive 64GB Kingston": 19990,
+        "Perfume Hugo Boss": 39990,
+        "Plancha a Vapor Philips": 14990,
+        "Polera Oversize Zara": 9990,
+        "Purificador Aire Xiaomi": 99990,
+        "Set Cuchillos Tramontina":39990,
+        "Smart TV 43 LG": 199990,
+        "Tablet Samsung A8": 79990,
+        "Teclado Mecanico Redragon": 19990,
+        "Vestido Floral H&M": 14990,
+        "Webcam Logitech C920": 79990,
+        "Zapatillas Nike Air Max": 39990
+    }
+    try:
+        # Se eliminan simbolos de moneda y comas
+        df["precio_unitario"] = (
+            df["precio_unitario"]
+            .str.replace("$","", regex=False)
+            .str.replace(",","", regex=False)
+        )
 
+        # Se asignan precios unitarios segun el producto
+        df["precio_unitario"] = (
+            df["producto"].map(precios).fillna(df["precio_unitario"])
+        )
 
+        # Se convierte la columna a tipo int
+        df["precio_unitario"] = df["precio_unitario"].astype("float")
+
+        # Se buscan precios unitarios inválidos
+        errores_precio_unitario = df[
+            df["precio_unitario"].isna() |
+            (df["precio_unitario"] <= 0)
+        ]
+        return df
+    except Exception as e:
+        logging.error(f"Error al validar precio unitario: {e}")
+        return None
 
 # Descuento
+def Validar_descuento(df):
+    try:
+        # Se eliminan simbolos de porcentaje y comas
+        df["descuento_pct"] = (
+            df["descuento_pct"]
+            .astype("string")
+            .str.replace("%","", regex=False)
+            .str.replace(",","", regex=False)
+        )
 
+        # Se convierte la columna a tipo float
+        df["descuento_pct"] = pd.to_numeric(
+            df["descuento_pct"],
+            errors="coerce"
+        ).astype("float")
+
+        df.loc[df["descuento_pct"] < 0, "descuento_pct"] = 0
+        df.loc[df["descuento_pct"] > 100, "descuento_pct"] = 100
+
+        # Se buscan descuentos invalidos
+        errores_descuento = df[
+            df["descuento_pct"].isna() |
+            (df["descuento_pct"] < 0) |
+            (df["descuento_pct"] > 100)
+        ]
+        return df
+    except Exception as e:
+        logging.error(f"Error al validar descuento: {e}")
+        return None
 
 
 # Estado pedido
 
+def Validar_estado_pedido(df):
+    try:
+        # Se estandariza el formato de la columna
+        df["estado_pedido"] = (
+            df["estado_pedido"]
+            .astype("string")
+            .str.strip()
+            .str.lower()
+        )
+
+        ESTADOS_EQUIVALENTES = {
+            "pendiente": "Pendiente",
+            "cancelado": "Cancelado",
+            "despachado": "Despachado",
+            "entregado": "Entregado"
+        }
+
+        df["estado_pedido"] = df["estado_pedido"].replace(ESTADOS_EQUIVALENTES)
+
+        ESTADOS_VALIDOS = [
+            "Pendiente",
+            "Cancelado",
+            "Despachado",
+            "Entregado"
+        ]
+
+        errores_estado_pedido = df[
+            df["estado_pedido"].isna() |
+            (~df["estado_pedido"].isin(ESTADOS_VALIDOS))
+        ]
+        return df
+    except Exception as e:
+        logging.error(f"Error al validar estado del pedido: {e}")
+        return None
 
 
 # Fecha despacho
 
+def Validar_fecha_despacho(df):
+    try:
+        # Se da formato a la columna de fecha de despacho utilizando la funcion convertir fecha
+        df["fecha_despacho"] = df["fecha_despacho"].apply(convertir_fecha)
+
+        # Se buscan registros con fecha de despacho nula
+        errores_fecha_despacho = df[df["fecha_despacho"].isna()]
+
+        # Se reemplazan los valores nulos de fecha de despacho con "None"
+        df["fecha_despacho"] = df["fecha_despacho"].fillna("None")
+
+        return df
+    except Exception as e:
+        print(f"Error al validar fecha de despacho: {e}")
+        return None
 
