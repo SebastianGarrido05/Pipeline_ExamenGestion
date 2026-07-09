@@ -1,5 +1,6 @@
 import pandas as pd
 import logging 
+import scripts.ingesta as ig
 # -------------------------------------------------------------
 # CADA UNO HACE 4, VALIDACION DE AMBOS TIPOS Y ADEMÁS LIMPIEZA
 # -------------------------------------------------------------
@@ -30,8 +31,8 @@ import logging
 logging.info("validando region cliente...")
 
 # se quitan espacios y estandarizar formato
-df["region"] = (
-    df["region"]
+ig.df["region"] = (
+    ig.df["region"]
     .astype("string")
     .str.strip()
     .str.title()
@@ -46,7 +47,7 @@ REGIONES_EQUIVALENTES = {
     "Biobío": "Biobio"
 }
 
-df["region"] = df["region"].replace(REGIONES_EQUIVALENTES)
+ig.df["region"] = ig.df["region"].replace(REGIONES_EQUIVALENTES)
 
 # Regiones permitidas según el negocio
 REGIONES_VALIDAS = [
@@ -56,9 +57,9 @@ REGIONES_VALIDAS = [
 ]
 
 # Buscar registros con región inválida o nula
-errores_region = df[
-    df["region"].isna() |
-    (~df["region"].isin(REGIONES_VALIDAS))
+errores_region = ig.df[
+    ig.df["region"].isna() |
+    (~ig.df["region"].isin(REGIONES_VALIDAS))
 ]
    # Region-
     
@@ -68,26 +69,26 @@ errores_region = df[
 # Producto
 
 # Quitamos espacios al inicio y final
-df["producto"] = (
-    df["producto"]
+ig.df["producto"] = (
+    ig.df["producto"]
     .astype("string")
     .str.strip()
 )
 
 # Se eliminan espacios dobles o múltiples
-df["producto"] = df["producto"].str.replace(
+ig.df["producto"] = ig.df["producto"].str.replace(
     r"\s+",
     " ",
     regex=True
 )
 
 # Se capitaliza cada palabra
-df["producto"] = df["producto"].str.title()
+ig.df["producto"] = ig.df["producto"].str.title()
 
 # Buscar productos nulos o vacíos
-errores_producto = df[
-    df["producto"].isna() |
-    (df["producto"] == "")
+errores_producto = ig.df[
+    ig.df["producto"].isna() |
+    (ig.df["producto"] == "")
 ]
 
     #producto-
@@ -97,8 +98,8 @@ errores_producto = df[
 # Cateogria
 
 #se quitan los espacios y se estandarizar formato
-df["categoria"] = (
-    df["categoria"]
+ig.df["categoria"] = (
+    ig.df["categoria"]
     .astype("string")
     .str.strip()
     .str.lower()
@@ -113,7 +114,7 @@ CATEGORIAS_EQUIVALENTES = {
     "moda": "Moda"
 }
 
-df["categoria"] = df["categoria"].replace(CATEGORIAS_EQUIVALENTES)
+ig.df["categoria"] = ig.df["categoria"].replace(CATEGORIAS_EQUIVALENTES)
 
 CATEGORIAS_VALIDAS = [
     "Tecnologia",
@@ -121,24 +122,24 @@ CATEGORIAS_VALIDAS = [
     "Moda"
 ]
 
-errores_categoria = df[
-    df["categoria"].isna() |
-    (~df["categoria"].isin(CATEGORIAS_VALIDAS))
+errores_categoria = ig.df[
+    ig.df["categoria"].isna() |
+    (~ig.df["categoria"].isin(CATEGORIAS_VALIDAS))
 ]
     #categoria-
 
 # Cantidad
 
 # Se convierte la columna a tipo numérico
-df["cantidad"] = pd.to_numeric(
-    df["cantidad"],
+ig.df["cantidad"] = pd.to_numeric(
+    ig.df["cantidad"],
     errors="coerce"
 )
 
 # Se buscan cantidades inválidas
-errores_cantidad = df[
-    df["cantidad"].isna() |
-    (df["cantidad"] <= 0)
+errores_cantidad = ig.df[
+    ig.df["cantidad"].isna() |
+    (ig.df["cantidad"] <= 0)
 ]
     #cantidad-
 
