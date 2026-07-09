@@ -1,9 +1,11 @@
 import pandas as pd
 import logging 
-import scripts.ingesta as ig
+
 # -------------------------------------------------------------
 # CADA UNO HACE 4, VALIDACION DE AMBOS TIPOS Y ADEMÁS LIMPIEZA
 # -------------------------------------------------------------
+df=None
+
 
 # id_pedido (S)
 
@@ -27,29 +29,41 @@ import scripts.ingesta as ig
 
 
 # Region
-def Validar_region():
+def Validar_region(df):
     try:
-        logging.info("validando region cliente...")
-
         # se quitan espacios y estandarizar formato
         REGIONES_EQUIVALENTES = {
-            "Region Metropolitana": "Metropolitana",
-            "Metropolitana De Santiago": "Metropolitana",
-            "Valparaíso": "Valparaiso",
-            "Bio Bio": "Biobio",
-            "Biobío": "Biobio",
-            "O'Higgins": "OHiggins"
+            "": "Sin Información",
+            "metropolitana": "Metropolitana",
+            "region metropolitana": "Metropolitana",
+            "metropolitana de santiago": "Metropolitana",
+
+            "valparaiso": "Valparaiso",
+            "valparaíso": "Valparaiso",
+
+            "biobio": "Biobio",
+            "bio bio": "Biobio",
+            "biobío": "Biobio",
+
+            "araucania": "Araucania",
+
+            "coquimbo": "Coquimbo",
+
+            "maule": "Maule",
+
+            "ohiggins": "OHiggins",
+            "o'higgins": "OHiggins"
         }
 
-        ig.df["region"] = (
-            ig.df["region"]
+        df["region"] = (
+            df["region"]
             .astype("string")
-            .fillna("Sin Información")
+            .fillna("")
             .str.strip()
-            .str.title()
+            .str.lower()
         )
 
-        ig.df["region"] = ig.df["region"].replace(REGIONES_EQUIVALENTES)
+        df["region"] = df["region"].replace(REGIONES_EQUIVALENTES)
 
         # Regiones permitidas según el negocio
         REGIONES_VALIDAS = [
@@ -64,22 +78,21 @@ def Validar_region():
 
         # Buscar registros con región inválida o nula
         logging.info("Buscando nulos de region cliente...")
-        errores_region = ig.df[
-            ig.df["region"].isna() |
-            (~ig.df["region"].isin(REGIONES_VALIDAS))
+        errores_region = df[
+            df["region"].isna() |
+            (~df["region"].isin(REGIONES_VALIDAS))
         ]
+        return df
     except Exception as e:
-
         logging.error(f"Error al validar región: {e}")
-   # Region-
+        # Region-
     
 # Producto
-def Validar_producto():
+def Validar_producto(df):
     try:
-        logging.info("validando producto cliente...")
         # Quitamos espacios al inicio y final
-        ig.df["producto"] = (
-            ig.df["producto"]
+        df["producto"] = (
+            df["producto"]
             .astype("string")
             .str.strip()
             .str.replace(r"\s+", " ", regex=True)
@@ -87,33 +100,32 @@ def Validar_producto():
         )
 
         # Se eliminan espacios dobles o múltiples
-        logging.info("corrigiendo faltas ortograficas producto cliente...")
-        ig.df["producto"] = ig.df["producto"].str.replace(
+        df["producto"] = df["producto"].str.replace(
             r"\s+",
             " ",
             regex=True
         )
 
         # Se capitaliza cada palabra
-        ig.df["producto"] = ig.df["producto"].str.title()
+        df["producto"] = df["producto"].str.title()
 
         # Buscar productos nulos o vacíos
-        errores_producto = ig.df[
-            ig.df["producto"].isna() |
-            (ig.df["producto"] == "")
+        errores_producto = df[
+            df["producto"].isna() |
+            (df["producto"] == "")
         ]
+        return df
     except Exception as e:
 
         logging.error(f"Error al validar producto: {e}")
         #producto-
 
 # Cateogria
-def Validar_categoria():
+def Validar_categoria(df):
     try:
-        logging.info("validando categoria cliente...")
         #se quitan los espacios y se estandarizar formato
-        ig.df["categoria"] = (
-            ig.df["categoria"]
+        df["categoria"] = (
+            df["categoria"]
             .astype("string")
             .str.strip()
             .str.lower()
@@ -121,21 +133,15 @@ def Validar_categoria():
 
         CATEGORIAS_EQUIVALENTES = {
             "tech": "Tecnologia",
-            "TECH": "Tecnologia",
-            "Tech": "Tecnologia",
+            "technology": "Tecnologia",
             "tecnologia": "Tecnologia",
-            "Tecnologia": "Tecnologia",
 
             "hogar": "Hogar",
-            "HOGAR": "Hogar",
-            "Hogar": "Hogar",
 
-            "moda": "Moda",
-            "MODA": "Moda",
-            "Moda": "Moda"
+            "moda": "Moda"
         }
 
-        ig.df["categoria"] = ig.df["categoria"].replace(CATEGORIAS_EQUIVALENTES)
+        df["categoria"] = df["categoria"].replace(CATEGORIAS_EQUIVALENTES)
 
         CATEGORIAS_VALIDAS = [
             "Tecnologia",
@@ -143,31 +149,40 @@ def Validar_categoria():
             "Moda"
         ]
 
-        errores_categoria = ig.df[
-            ig.df["categoria"].isna() |
-            (~ig.df["categoria"].isin(CATEGORIAS_VALIDAS))
+        errores_categoria = df[
+            df["categoria"].isna() |
+            (~df["categoria"].isin(CATEGORIAS_VALIDAS))
         ]
+        return df
     except Exception as e:
 
         logging.error(f"Error al validar categoría: {e}")
             #categoria-
 
 # Cantidad
-def Validar_cantidad():
+def Validar_cantidad(df):
     try:
-        logging.info("validando cantidad cliente...")
         # Se convierte la columna a tipo numérico
-        ig.df["cantidad"] = pd.to_numeric(
-            ig.df["cantidad"],
+        df["cantidad"] = pd.to_numeric(
+            df["cantidad"],
             errors="coerce"
         )
 
         # Se buscan cantidades inválidas
-        logging.info("buscando faltas de cantidad cliente...")
-        ig.df["cantidad"] = df["cantidad"].fillna(1)
+        df["cantidad"] = df["cantidad"].fillna(1)
 
-        ig.df.loc[df["cantidad"] <= 0, "cantidad"] = 1
-            #cantidad-
+        print(df["cantidad"].dtype)
+        print(df["cantidad"].head(20))
+
+        print("Menores o iguales a 0:")
+        print(df[df["cantidad"] <= 0])
+
+        df.loc[df["cantidad"] <= 0, "cantidad"] = 1
+
+        print("Después de la corrección:")
+        print(df[df["cantidad"] <= 0])
+            #cantidad-    
+        return df
     except Exception as e:
 
         logging.error(f"Error al validar cantidad: {e}")

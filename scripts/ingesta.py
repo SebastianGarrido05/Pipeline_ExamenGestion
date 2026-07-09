@@ -1,5 +1,6 @@
 import pandas as pd
 import logging
+import scripts.validacion_individual as vi
 from datetime import datetime
 
 # login
@@ -12,6 +13,12 @@ def procesar_csv(file_path, output_path):
 
     logging.info("Leyendo CSV...")
     df = pd.read_csv(file_path)
+    vi.df=df
+
+    vi.Validar_region(df)
+    vi.Validar_producto(df)
+    vi.Validar_categoria(df)
+    vi.Validar_cantidad(df)
 
     logging.info("Normalizando texto...")
     df = df.map(lambda x: x.lower().strip() if isinstance(x, str) else x)
@@ -29,6 +36,7 @@ def procesar_csv(file_path, output_path):
         ],
         how='all'
     )
+    df=vi.df
     
     # EXPORTAR
 
