@@ -88,18 +88,15 @@ def Validar_rut_cliente(df):
 
             if rut == "":
                 return pd.NA
-
             rut = rut.upper()
 
             if len(rut) < 2:
                 return pd.NA
-
             cuerpo = rut[:-1]
             dv = rut[-1]
 
             if not cuerpo.isdigit():
                 return pd.NA
-
             cuerpo = f"{int(cuerpo):,}".replace(",", ".")
             return f"{cuerpo}-{dv}"
 
@@ -114,7 +111,29 @@ def Validar_rut_cliente(df):
 
 # Nombre cliente (S)
 
-    # Nombre cliente
+def Validar_nombre_cliente(df):
+    try:
+        # Limpiar espacios y capitalizar
+        df["nombre_cliente"] = (
+            df["nombre_cliente"]
+            .astype("string")
+            .fillna("")
+            .str.strip()
+            .str.replace(r"\s+", " ", regex=True)
+            .str.capitalize()
+        )
+
+        # Buscar nombres vacíos
+        errores_nombre_cliente = df[
+            (df["nombre_cliente"] == "") |
+            (df["nombre_cliente"].isna())
+        ]
+
+        return df
+
+    except Exception as e:
+        logging.error(f"Error al validar nombre cliente: {e}")
+        return df
 
 
 # Region

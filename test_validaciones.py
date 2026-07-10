@@ -11,8 +11,11 @@ df = ig.cargar_csv(entrada)
 
 print("Inicio:", df.shape)
 
-df = vi.validar_id_pedido(df)
+df = vi.Validar_id_pedido(df)
 print("Id Pedido:", df is None)
+
+df = vi.Validar_nombre_cliente(df)
+print("Nombre Cliente:", df is None)
 
 df = vi.Validar_cantidad(df)
 print("Cantidad:", df is None)

@@ -3,7 +3,7 @@ import scripts.validacion_individual as vi
 import pandas as pd
 from pathlib import Path
 import logging
-from scripts.carga import Carga_bd
+# from scripts.carga import Carga_bd
 
 # login
 logging.basicConfig(
@@ -30,23 +30,6 @@ errores_dir.mkdir(exist_ok=True)
 logging.info("Leyendo CSV...")
 
 df = ig.cargar_csv(entrada)
-# df = vi.validar_id_pedido(df)
-df = vi.Validar_rut_cliente(df)
-# df = vi.Validar_fecha_pedido(df)
-# df = vi.Validar_region(df)
-# df = vi.Validar_producto(df)
-# df = vi.Validar_categoria(df)
-# df = vi.Validar_cantidad(df) # ARROJA TABLA // ARREGLAR
-# df = vi.Validar_precio_unitario(df)
-# df = vi.Validar_descuento(df)
-# df = vi.Validar_estado_pedido(df)
-# df = vi.Validar_fecha_despacho(df)
-
-logging.info("Normalizando texto...")
-df = df.map(lambda x: x.lower().strip() if isinstance(x, str) else x)
-
-logging.info("Ordenando por id_pedido...")
-df = df.sort_values(by='id_pedido')
 
 logging.info("Eliminando filas completamente vacías...")
 df = df.dropna(
@@ -58,6 +41,25 @@ df = df.dropna(
     ],
     how='all'
 )
+
+logging.info("Normalizando texto...")
+df = df.map(lambda x: x.lower().strip() if isinstance(x, str) else x)
+
+# df = vi.Validar_id_pedido(df)
+logging.info("Ordenando por id_pedido...")
+df = df.sort_values(by='id_pedido')
+
+df = vi.Validar_rut_cliente(df)
+df = vi.Validar_nombre_cliente(df)
+df = vi.Validar_fecha_pedido(df)
+df = vi.Validar_region(df)
+df = vi.Validar_producto(df)
+df = vi.Validar_categoria(df)
+# df = vi.Validar_cantidad(df) # ARROJA TABLA // ARREGLAR
+df = vi.Validar_precio_unitario(df)
+df = vi.Validar_descuento(df)
+df = vi.Validar_estado_pedido(df)
+df = vi.Validar_fecha_despacho(df)
 
 # EXPORTAR
 
