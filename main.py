@@ -84,6 +84,8 @@ df = vi.Validar_estado_pedido(df)
 
 logging.info("Registrando Fecha de Despacho...")
 df = vi.Validar_fecha_despacho(df)
+
+logging.info("Calculando Total de Venta...")
 df = vi.Crear_total_venta(df)
 
 # EXPORTAR
