@@ -6,7 +6,8 @@ import scripts.ingesta as ig
 # -------------------------------------------------------------
 # CADA UNO HACE 4, VALIDACION DE AMBOS TIPOS Y ADEMÁS LIMPIEZA
 # -------------------------------------------------------------
-df = ig.df
+
+# df = ig.cargar_csv("./data/raw/ventas_datamart.csv")
 
 def convertir_fecha(fecha):
     FORMATOS = [
