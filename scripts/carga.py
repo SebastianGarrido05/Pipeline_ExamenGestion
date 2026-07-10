@@ -1,5 +1,5 @@
 import logging
-from conexion import conectar
+from scripts.conexion import conectar
 
 def Carga_bd(df):
     conexion = None

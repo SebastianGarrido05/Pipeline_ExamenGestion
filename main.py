@@ -68,3 +68,5 @@ logging.info("Exportando dataset limpio...")
 df.to_csv(salida, index=False)
 
 logging.info("Proceso terminado correctamente.")
+
+Carga_bd(df)

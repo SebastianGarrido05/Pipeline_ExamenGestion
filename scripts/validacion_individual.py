@@ -279,17 +279,17 @@ def Validar_cantidad(df):
         # Se buscan cantidades inválidas
         df["cantidad"] = df["cantidad"].fillna(1)
 
-        print(df["cantidad"].dtype)
-        print(df["cantidad"].head(20))
+        # print(df["cantidad"].dtype)
+        # print(df["cantidad"].head(20))
 
-        print("Menores o iguales a 0:")
-        print(df[df["cantidad"] <= 0])
+        # print("Menores o iguales a 0:")
+        # print(df[df["cantidad"] <= 0])
 
         df.loc[df["cantidad"] <= 0, "cantidad"] = 1
 
-        print("Después de la corrección:")
-        print(df[df["cantidad"] <= 0])
-            #cantidad-    
+        # print("Después de la corrección:")
+        # print(df[df["cantidad"] <= 0])
+        #     #cantidad-    
         return df
     except Exception as e:
 
@@ -433,11 +433,29 @@ def Validar_fecha_despacho(df):
         # Se da formato a la columna de fecha de despacho utilizando la funcion convertir fecha
         df["fecha_despacho"] = df["fecha_despacho"].apply(convertir_fecha)
 
+        df["fecha_pedido"] = pd.to_datetime(
+            df["fecha_pedido"],
+            format="%Y-%m-%d",
+            errors="coerce"
+        )
+
+        df["fecha_despacho"] = pd.to_datetime(
+            df["fecha_despacho"],
+            format="%Y-%m-%d",
+            errors="coerce"
+        )
+
         # Se buscan registros con fecha de despacho nula
         errores_fecha_despacho = df[df["fecha_despacho"].isna()]
 
+        df.loc[errores_fecha_despacho, "fecha_despacho"] = (
+            df.loc[errores_fecha_despacho, "fecha_pedido"] + pd.Timedelta(days=30)
+        )
+
         # Se reemplazan los valores nulos de fecha de despacho con "None"
         df["fecha_despacho"] = df["fecha_despacho"].fillna("None")
+
+        df["fecha_despacho"] = df["fecha_despacho"].dt.strftime("%Y-%m-%d")
 
         return df
     except Exception as e:
