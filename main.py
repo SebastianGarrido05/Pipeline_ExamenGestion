@@ -49,16 +49,37 @@ df = df.map(lambda x: x.lower().strip() if isinstance(x, str) else x)
 logging.info("Ordenando por id_pedido...")
 df = df.sort_values(by='id_pedido')
 
+logging.info("Alistando Rut de los clientes...")
 df = vi.Validar_rut_cliente(df)
+
+logging.info("Ajustando nombres de clientes...")
 df = vi.Validar_nombre_cliente(df)
+
+logging.info("Validando fecha de pedido...")
 df = vi.Validar_fecha_pedido(df)
+
+logging.info("Validando región...")
 df = vi.Validar_region(df)
+
+logging.info("Asegurando productos...")
 df = vi.Validar_producto(df)
+
+logging.info("Validando categorías...")
 df = vi.Validar_categoria(df)
+
+logging.info("Regulando Cantidades...")
 df = vi.Validar_cantidad(df) # ARROJA TABLA // ARREGLAR
+
+logging.info("Corroborando precio unitario...")
 df = vi.Validar_precio_unitario(df)
+
+logging.info("Asignando descuentos...")
 df = vi.Validar_descuento(df)
+
+logging.info("Asegurando estado del pedido...")
 df = vi.Validar_estado_pedido(df)
+
+logging.info("Registrando Fecha de Despacho...")
 df = vi.Validar_fecha_despacho(df)
 
 # EXPORTAR
