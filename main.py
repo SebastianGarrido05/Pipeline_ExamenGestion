@@ -19,6 +19,10 @@ cont = len(list(carpeta.glob("test*.csv"))) + 1
 
 entrada = BASE_DIR / "data" / "raw" / "ventas_datamart.csv"
 salida = BASE_DIR / "data" / "test" / f"test{cont}.csv"
+
+errores_dir = BASE_DIR / "data" / "errors" / f"errores{cont}.csv"
+errores_dir.mkdir(exist_ok=True)
+
 # nombre_archivo = carpeta / f"test{cont}.csv"
 
 # =================================================================
@@ -26,6 +30,7 @@ salida = BASE_DIR / "data" / "test" / f"test{cont}.csv"
 logging.info("Leyendo CSV...")
 
 df = ig.cargar_csv(entrada)
+<<<<<<< HEAD
 
 df = vi.Validar_region(df)
 df = vi.Validar_producto(df)
@@ -35,6 +40,19 @@ df = vi.Validar_precio_unitario(df)
 df = vi.Validar_descuento(df)
 df = vi.Validar_estado_pedido(df)
 df = vi.Validar_fecha_despacho(df)
+=======
+# df = vi.validar_id_pedido(df)
+df = vi.Validar_rut_cliente(df)
+# df = vi.Validar_fecha_pedido(df)
+# df = vi.Validar_region(df)
+# df = vi.Validar_producto(df)
+# df = vi.Validar_categoria(df)
+# df = vi.Validar_cantidad(df) # ARROJA TABLA // ARREGLAR
+# df = vi.Validar_precio_unitario(df)
+# df = vi.Validar_descuento(df)
+# df = vi.Validar_estado_pedido(df)
+# df = vi.Validar_fecha_despacho(df)
+>>>>>>> eb0a4fc328c726831259d9ebbc3d24f85f0dce7f
 
 logging.info("Normalizando texto...")
 df = df.map(lambda x: x.lower().strip() if isinstance(x, str) else x)
