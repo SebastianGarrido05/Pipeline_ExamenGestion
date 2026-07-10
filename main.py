@@ -30,7 +30,7 @@ df = ig.cargar_csv(entrada)
 df = vi.Validar_region(df)
 df = vi.Validar_producto(df)
 df = vi.Validar_categoria(df)
-#df = vi.Validar_cantidad(df) # ARROJA TABLA // ARREGLAR
+df = vi.Validar_cantidad(df) # ARROJA TABLA // ARREGLAR
 df = vi.Validar_precio_unitario(df)
 df = vi.Validar_descuento(df)
 df = vi.Validar_estado_pedido(df)
@@ -60,3 +60,5 @@ logging.info("Exportando dataset limpio...")
 df.to_csv(salida, index=False)
 
 logging.info("Proceso terminado correctamente.")
+
+Carga_bd(df)
