@@ -455,7 +455,7 @@ def Validar_fecha_despacho(df):
         df["fecha_despacho"] = (
             df["fecha_despacho"]
             .dt.strftime("%Y-%m-%d")
-            .fillna("None")
+            .fillna(df["estado_pedido"])
         )
         return df
 
