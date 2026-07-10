@@ -30,7 +30,7 @@ def convertir_fecha(fecha):
 
 
 # id_pedido (S)
-def validar_id_pedido(df):
+def Validar_id_pedido(df):
     try:
         # Se ordena el df por 'id_pedido'
         logging.info("Ordenando por id_pedido...")
@@ -70,7 +70,46 @@ def Validar_fecha_pedido(df):
 
 # Rut cliente (S)
 
-    # Rut cliente
+def Validar_rut_cliente(df):
+    try:
+        # Convertir a string y limpiar espacios
+        df["rut_cliente"] = (
+            df["rut_cliente"]
+            .astype("string")
+            .fillna("")
+            .str.strip()
+            .str.replace(r"\s+", "", regex=True)
+            .str.replace(".", "", regex=False)
+            .str.replace("-", "", regex=False)
+        )
+
+        # Función para dar formato al RUT
+        def formatear_rut(rut):
+
+            if rut == "":
+                return pd.NA
+
+            rut = rut.upper()
+
+            if len(rut) < 2:
+                return pd.NA
+
+            cuerpo = rut[:-1]
+            dv = rut[-1]
+
+            if not cuerpo.isdigit():
+                return pd.NA
+
+            cuerpo = f"{int(cuerpo):,}".replace(",", ".")
+            return f"{cuerpo}-{dv}"
+
+        df["rut_cliente"] = df["rut_cliente"].apply(formatear_rut)
+
+        return df
+
+    except Exception as e:
+        logging.error(f"Error al validar rut cliente: {e}")
+        return df
 
 
 # Nombre cliente (S)
