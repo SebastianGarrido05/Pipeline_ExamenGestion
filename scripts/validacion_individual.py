@@ -159,8 +159,8 @@ def Validar_region(df):
 
             "maule": "Maule",
 
-            "ohiggins": "OHiggins",
-            "o'higgins": "OHiggins"
+            "ohiggins": "O'Higgins",
+            "o'higgins": "O'Higgins"
         }
 
         df["region"] = (
@@ -181,7 +181,7 @@ def Validar_region(df):
             "Araucania",
             "Coquimbo",
             "Maule",
-            "OHiggins"
+            "O'Higgins"
         ]
 
         # Buscar registros con región inválida o nula
@@ -279,17 +279,8 @@ def Validar_cantidad(df):
         # Se buscan cantidades inválidas
         df["cantidad"] = df["cantidad"].fillna(1)
 
-        # print(df["cantidad"].dtype)
-        # print(df["cantidad"].head(20))
-
-        # print("Menores o iguales a 0:")
-        # print(df[df["cantidad"] <= 0])
-
         df.loc[df["cantidad"] <= 0, "cantidad"] = 1
 
-        # print("Después de la corrección:")
-        # print(df[df["cantidad"] <= 0])
-        #     #cantidad-    
         return df
     except Exception as e:
 
@@ -334,7 +325,6 @@ def Validar_precio_unitario(df):
         df["precio_unitario"] = (
             df["precio_unitario"]
             .str.replace("$","", regex=False)
-            .str.replace(".", "", regex=False)
             .str.replace(",","", regex=False)
         )
 
