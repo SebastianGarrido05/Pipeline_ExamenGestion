@@ -1,7 +1,6 @@
 import pandas as pd
 import logging
-import scripts.validacion_individual as vi
-from datetime import datetime
+import scripts.ingesta as ig
 
 # logging.info("Leyendo CSV...")
 def cargar_csv(file_path):

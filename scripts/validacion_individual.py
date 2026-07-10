@@ -1,13 +1,10 @@
 import pandas as pd
 import numpy as np
 import logging 
-import scripts.ingesta as ig
 
 # -------------------------------------------------------------
 # CADA UNO HACE 4, VALIDACION DE AMBOS TIPOS Y ADEMÁS LIMPIEZA
 # -------------------------------------------------------------
-
-# df = ig.cargar_csv("./data/raw/ventas_datamart.csv")
 
 def convertir_fecha(fecha):
     FORMATOS = [
@@ -32,27 +29,43 @@ def convertir_fecha(fecha):
     return pd.NA
 
 
-# Funcion completa
-
-
-
-
 # id_pedido (S)
 def validar_id_pedido(df):
+    try:
+        # Se ordena el df por 'id_pedido'
+        logging.info("Ordenando por id_pedido...")
+        df = df.sort_values(by='id_pedido')
 
-    # Se ordena el df por 'id_pedido'
-    logging.info("Ordenando por id_pedido...")
-    df = ig.df.sort_values(by='id_pedido')
+        # Se busca duplicados en la columna 'id_pedido'
+        logging.info("Normalizando texto...")
+        df = df.map(lambda x: x.lower().strip() if isinstance(x, str) else x)
 
-    # Se busca duplicados en la columna 'id_pedido'
-    logging.info("Normalizando texto...")
-    df = ig.df.map(lambda x: x.lower().strip() if isinstance(x, str) else x)
+        df["id_pedido"] = pd.to_numeric(df["id_pedido"], errors="coerce")   # Convierte a numerico, si no se puede los deja cmo NaN
+        df["id_pedido"] = df["id_pedido"].fillna(pd.NA)                     # Saca nulos
+        df["id_pedido"] = df["id_pedido"].astype("Int64")                   # Conviente a entero
 
-
+        return df
+    except Exception as e:
+        logging.error(f"Error al validar id_pedido: {e}")
+        return None
 
 # Fecha (S)
 
-    # Fecha
+def Validar_fecha_pedido(df):
+    try:
+        # Se da formato a la columna de fecha de pedido utilizando la funcion convertir fecha
+        df["fecha_pedido"] = df["fecha_pedido"].apply(convertir_fecha)
+
+        # Se buscan registros con fecha de pedido nula
+        errores_fecha_pedido = df[df["fecha_pedido"].isna()]
+
+        # Se reemplazan los valores nulos de fecha de pedido con "None"
+        df["fecha_pedido"] = df["fecha_pedido"].fillna("None")
+
+        return df
+    except Exception as e:
+        logging.error(f"Error al validar fecha de pedido: {e}")
+        return None
 
 
 # Rut cliente (S)

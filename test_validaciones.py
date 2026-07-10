@@ -1,11 +1,18 @@
 import scripts.validacion_individual as vi
 import pandas as pd
+import scripts.ingesta as ig
+from pathlib import Path
 
 pd.set_option("display.max_rows", None)
 
-df = pd.read_csv("data/raw/ventas_datamart.csv")
+BASE_DIR = Path(__file__).resolve().parent
+entrada = BASE_DIR / "data" / "raw" / "ventas_datamart.csv"
+df = ig.cargar_csv(entrada)
 
 print("Inicio:", df.shape)
+
+df = vi.validar_id_pedido(df)
+print("Id Pedido:", df is None)
 
 df = vi.Validar_cantidad(df)
 print("Cantidad:", df is None)
