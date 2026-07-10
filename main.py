@@ -3,6 +3,7 @@ import scripts.validacion_individual as vi
 import pandas as pd
 from pathlib import Path
 import logging
+from scripts.carga import Carga_bd
 
 # login
 logging.basicConfig(
