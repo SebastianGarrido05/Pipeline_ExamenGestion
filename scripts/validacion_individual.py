@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import logging 
 import scripts.ingesta as ig
 
@@ -375,13 +376,13 @@ def Validar_fecha_despacho(df):
 # Funcion total venta (nueva columna)
 def Crear_total_venta(df):
     try:
-        # Se calcula el total de venta
-        df["total_venta"] = (
+        df["total_venta"] = np.ceil(
             df["cantidad"] *
             df["precio_unitario"] *
             (1 - df["descuento_pct"] / 100)
-        ).round(2)
+        )
         return df
+
     except Exception as e:
         logging.error(f"Error al calcular total de venta: {e}")
         return None
