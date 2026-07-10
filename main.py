@@ -94,6 +94,6 @@ logging.info("Exportando dataset limpio...")
 
 salida_clean = BASE_DIR / "data" / "clean" / "DF_Limpio.csv"  # USAR CUANDO NO SE ESTÉ TESTEANDO Y SE QUIERA GUARDAR EL DF LIMPIO FINAL
 
-df.to_csv(salida, index=False)
+df.to_csv(salida_clean, index=False)
 Carga_bd(df)
 logging.info("Proceso terminado correctamente.")
