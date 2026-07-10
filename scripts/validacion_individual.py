@@ -430,9 +430,10 @@ def Validar_estado_pedido(df):
 
 def Validar_fecha_despacho(df):
     try:
-        # Se da formato a la columna de fecha de despacho utilizando la funcion convertir fecha
+        # Dar formato inicial a la fecha de despacho
         df["fecha_despacho"] = df["fecha_despacho"].apply(convertir_fecha)
 
+        # Convertir a datetime
         df["fecha_pedido"] = pd.to_datetime(
             df["fecha_pedido"],
             format="%Y-%m-%d",
@@ -445,19 +446,28 @@ def Validar_fecha_despacho(df):
             errors="coerce"
         )
 
-        # Se buscan registros con fecha de despacho nula
-        errores_fecha_despacho = df[df["fecha_despacho"].isna()]
+        # Máscara de fechas de despacho nulas
+        mascara = df["fecha_despacho"].isna()
 
-        df.loc[errores_fecha_despacho, "fecha_despacho"] = (
-            df.loc[errores_fecha_despacho, "fecha_pedido"] + pd.Timedelta(days=30)
+        # Reemplazar por fecha_pedido + 30 días
+        df.loc[mascara, "fecha_despacho"] = (
+            df.loc[mascara, "fecha_pedido"] + pd.Timedelta(days=30)
         )
 
-        # Se reemplazan los valores nulos de fecha de despacho con "None"
-        df["fecha_despacho"] = df["fecha_despacho"].fillna("None")
+        # Si el pedido está cancelado, la fecha de despacho debe ser None
+        df.loc[
+            df["estado_pedido"].str.upper() == "CANCELADO",
+            "fecha_despacho"
+        ] = pd.NaT
 
-        df["fecha_despacho"] = df["fecha_despacho"].dt.strftime("%Y-%m-%d")
-
+        # Convertir nuevamente a string
+        df["fecha_despacho"] = (
+            df["fecha_despacho"]
+            .dt.strftime("%Y-%m-%d")
+            .fillna("None")
+        )
         return df
+
     except Exception as e:
         logging.error(f"Error al validar fecha de despacho: {e}")
         return None
