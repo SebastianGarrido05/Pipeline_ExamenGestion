@@ -65,8 +65,10 @@ df = vi.Validar_fecha_despacho(df)
 
 logging.info("Exportando dataset limpio...")
 
+salida_clean = BASE_DIR / "data" / "clean" / "DF_Limpio.csv"  # USAR CUANDO NO SE ESTÉ TESTEANDO Y SE QUIERA GUARDAR EL DF LIMPIO FINAL
+
 df.to_csv(salida, index=False)
 
 logging.info("Proceso terminado correctamente.")
 
-Carga_bd(df)
+# Carga_bd(df)

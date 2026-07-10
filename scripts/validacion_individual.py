@@ -120,7 +120,7 @@ def Validar_nombre_cliente(df):
             .fillna("")
             .str.strip()
             .str.replace(r"\s+", " ", regex=True)
-            .str.capitalize()
+            .str.title()
         )
 
         # Buscar nombres vacíos
@@ -460,7 +460,7 @@ def Validar_fecha_despacho(df):
         return df
     except Exception as e:
         logging.error(f"Error al validar fecha de despacho: {e}")
-        return None
+        return df
 
 # Funcion total venta (nueva columna)
 def Crear_total_venta(df):
