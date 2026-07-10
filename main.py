@@ -2,6 +2,7 @@ import scripts.ingesta as ing
 import scripts.validacion_individual as vi
 from pathlib import Path
 import logging
+from scripts.carga import Carga_bd
 
 # login
 logging.basicConfig(
@@ -25,3 +26,5 @@ ing.procesar_csv(entrada, salida)
 
 
 # ing.procesar_csv(entrada, salida)
+
+Carga_bd(pd.read_csv(salida))
