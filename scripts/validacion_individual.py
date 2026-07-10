@@ -334,6 +334,7 @@ def Validar_precio_unitario(df):
         df["precio_unitario"] = (
             df["precio_unitario"]
             .str.replace("$","", regex=False)
+            .str.replace(".", "", regex=False)
             .str.replace(",","", regex=False)
         )
 

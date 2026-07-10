@@ -20,8 +20,8 @@ cont = len(list(carpeta.glob("test*.csv"))) + 1
 entrada = BASE_DIR / "data" / "raw" / "ventas_datamart.csv"
 salida = BASE_DIR / "data" / "test" / f"test{cont}.csv"
 
-errores_dir = BASE_DIR / "data" / "errors" / f"errores{cont}.csv"
-errores_dir.mkdir(exist_ok=True)
+# errores_dir = BASE_DIR / "data" / "errors" / f"errores{cont}.csv"
+# errores_dir.mkdir(exist_ok=True)
 
 # nombre_archivo = carpeta / f"test{cont}.csv"
 
@@ -55,11 +55,13 @@ df = vi.Validar_fecha_pedido(df)
 df = vi.Validar_region(df)
 df = vi.Validar_producto(df)
 df = vi.Validar_categoria(df)
-# df = vi.Validar_cantidad(df) # ARROJA TABLA // ARREGLAR
+df = vi.Validar_cantidad(df) # ARROJA TABLA // ARREGLAR
 df = vi.Validar_precio_unitario(df)
+df = vi.Crear_segmento_precio(df)
 df = vi.Validar_descuento(df)
 df = vi.Validar_estado_pedido(df)
 df = vi.Validar_fecha_despacho(df)
+df = vi.Crear_total_venta(df)
 
 # EXPORTAR
 
@@ -68,5 +70,3 @@ logging.info("Exportando dataset limpio...")
 df.to_csv(salida, index=False)
 
 logging.info("Proceso terminado correctamente.")
-
-Carga_bd(df)
